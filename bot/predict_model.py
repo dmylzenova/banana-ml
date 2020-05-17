@@ -77,7 +77,7 @@ class Predictor:
         self.model.load_state_dict(torch.load(path))
 
     def get_image_predict(self, img_path='img_path.jpg'):
-        image = Image.open(img_path).convert('RGB')
+        image = Image.open(img_path).convert('RGB').resize((300, 300), Image.ANTIALIAS)
         img_tensor = torch.tensor(np.transpose(np.array(image), (2, 0, 1))).unsqueeze(0)
         print('Before normalize', torch.max(img_tensor))
         img_tensor = img_tensor / 255.

@@ -17,6 +17,7 @@ import logging
 
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from predict_model import Predictor
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,6 +25,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+predictor = Predictor("trained_model_dict")
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -67,8 +69,11 @@ def get_photo(update, context):
     
     # load saved photo
     new_photo = open('user_photo.jpg', 'rb')
-    context.bot.send_photo(chat_id=update.effective_chat.id, photo=new_photo)
 
+    # send photo
+    context.bot.send_photo(chat_id=update.effective_chat.id, photo=new_photo)
+    result = predictor.get_image_predict('user_photo.jpg')
+    context.bot.send_message(chat_id=update.effective_chat.id, text=result)
 
 def main():
     """Start the bot."""
